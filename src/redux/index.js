@@ -1,12 +1,30 @@
-import { combineReducers } from "@reduxjs/toolkit";
-import { AppSlice } from "./app";
-import { ShowsSlice } from "./shows";
-import { UserSlice } from "./user";
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchUserAdmin } from "./userThunk";
 
-const rootReducer = combineReducers({
-    app: AppSlice.reducer,
-    user: UserSlice.reducer,
-    shows: ShowsSlice.reducer,
+const initialState = {
+    name: "",
+    email: "",
+    imageUrl: "",
+};
+
+const userSlice = createSlice({
+    name: "user",
+    initialState,
+    reducers: {
+        updateUserDetails: (state, { payload }) => {
+            state.name = payload.name;
+            state.email = payload.email;
+            state.imageUrl = payload.imageUrl;
+        },
+    },
+    extraReducers: {
+        [fetchUserAdmin.fulfilled]: (state, { payload }) => {
+            return {
+                ...state,
+                isAdmin: payload.admin,
+            };
+        },
+    },
 });
 
-export default rootReducer;
+export { userSlice as UserSlice };
